@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/KnockOutEZ/Kodee/backend/auth"
 	"github.com/KnockOutEZ/Kodee/backend/systemUsage"
 	"github.com/KnockOutEZ/Kodee/backend/utils"
 	"github.com/KnockOutEZ/Kodee/backend/weatherApi"
+	"github.com/KnockOutEZ/Kodee/backend/healthreminder"
+	"github.com/KnockOutEZ/Kodee/backend/server"
 	"github.com/getlantern/systray"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+
 )
 
 var myCtx context.Context
@@ -32,6 +34,8 @@ func NewApp() *App {
 // startup is called at application startup
 func (a *App) startup(ctx context.Context) {
 	// Perform your setup here
+	server.TestOut()
+	server.TestAuth()
 	a.ctx = ctx
 }
 
@@ -40,6 +44,11 @@ func (a *App) domReady(ctx context.Context) {
 	// Add your action here
 	myCtx = ctx
 	utils.CopyIconInStartup()
+	// call reminderFuncs here
+	go healthreminder.LookAwayReminder()
+	go healthreminder.StandUpReminder()
+	go healthreminder.HydrateReminder()
+	
 	systray.Run(onReady, onExit)
 }
 
@@ -113,7 +122,7 @@ func (a *App) GetBandwithSpeed() []interface{}{
 
 // Greet returns a greeting for the given name
 func (a *App) Auth() {
-	auth.HandlePage()
+	// auth.Auth()
 }
 
 func (a *App) GetWeather(){

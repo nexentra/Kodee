@@ -7,6 +7,7 @@ func NotificationFunc(title, message string) {
 		AppID:   "Kodee",
 		Title:   title,
 		Message: message,
+		// Duration: toast.Long,
 		// Audio: toast.Default,
 		// Icon:                "frontend/src/assets/wails.ico",
 		// Actions:             []toast.Action{{"protocol", "I'm a button", "https://www.google.com/search?q=qwe"}, {"protocol", "Me too!", ""}},
