@@ -9,7 +9,7 @@ import (
 	"github.com/KnockOutEZ/Kodee/backend/systemUsage"
 	"github.com/KnockOutEZ/Kodee/backend/utils"
 	"github.com/KnockOutEZ/Kodee/backend/weatherApi"
-	"github.com/KnockOutEZ/Kodee/backend/healthreminder"
+	"github.com/KnockOutEZ/Kodee/backend/healthReminder"
 	"github.com/KnockOutEZ/Kodee/backend/server"
 	"github.com/getlantern/systray"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -45,9 +45,9 @@ func (a *App) domReady(ctx context.Context) {
 	myCtx = ctx
 	utils.CopyIconInStartup()
 	// call reminderFuncs here
-	go healthreminder.LookAwayReminder()
-	go healthreminder.StandUpReminder()
-	go healthreminder.HydrateReminder()
+	go healthReminder.LookAwayReminder()
+	go healthReminder.StandUpReminder()
+	go healthReminder.HydrateReminder()
 	
 	systray.Run(onReady, onExit)
 }

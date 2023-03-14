@@ -1,4 +1,4 @@
-package healthreminder
+package healthReminder
 
 import (
 	"time"

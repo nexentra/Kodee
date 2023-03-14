@@ -1,7 +1,6 @@
 package server
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 
@@ -22,14 +21,14 @@ func TestOut() {
 
 	db, err := ConnectDB()
 	// Create a new person
-	p1 := PortfolioTables{Name: "Alice2", Description: "Hello", UDEF: json.RawMessage(`{"test": "test"}`), User_id: 1}
-	err = CreatePortfolioTables(&p1)
+	p1 := PortfolioTables{Name: "test", Description: "test", UDEF: json.RawMessage(`{"test": "test"}`), User_id: 1}
+	err = CreatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",&p1)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Retrieve a person by ID
-	p2, err := GetPortfolioTables(p1.ID, p1.User_id)
+	p2, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -37,7 +36,7 @@ func TestOut() {
 
 	// Update a person's age
 	p1.Name = "Bob"
-	err = UpdatePortfolioTables(&p1)
+	err = UpdatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",&p1)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -49,52 +48,106 @@ func TestOut() {
 	// }
 
 	// Verify that the person has been deleted
-	p3, err := GetPortfolioTables(p1.ID, p1.User_id)
+	p3, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(p3)
 
+	p4, err := GetSinglePortfolio("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(p4)
+
 	defer db.Close()
 }
 
-func CreatePortfolioTables(p *PortfolioTables) error {
+func CreatePortfolioTables(token string, p *PortfolioTables) error {
+	user, err := Me(token)
+	if err != nil {
+		return fmt.Errorf("Please login to continue!!")
+	}
 	db, err := ConnectDB()
+	defer db.Close()
 	sqlStatement := `
 	INSERT INTO portfolio (name, description, udef, user_id)
 	VALUES ($1, $2, $3, $4)
 	RETURNING id`
 	id := 0
-	err = db.QueryRow(sqlStatement, p.Name, p.Description, p.UDEF, p.User_id).Scan(&id)
+	err = db.QueryRow(sqlStatement, p.Name, p.Description, p.UDEF, user.ID).Scan(&id)
 	if err != nil {
 		return err
 	}
 	p.ID = id
-	defer db.Close()
 	return nil
 }
 
-func GetPortfolioTables(id int, user_id int) (PortfolioTables, error) {
-	db, err := ConnectDB()
-	sqlStatement := `SELECT * FROM portfolio WHERE id=$1 AND user_id=$2`
-	row := db.QueryRow(sqlStatement, id, user_id)
-	var p PortfolioTables
-	err = row.Scan(&p.ID, &p.Name, &p.Description, &p.UDEF, &p.User_id)
-	defer db.Close()
-	switch err {
-	case sql.ErrNoRows:
-		fmt.Println("No rows were returned!")
-		return p, nil
-	case nil:
-		return p, nil
-	default:
-		fmt.Println(err)
-		return p, err
+func GetPortfolioTables(token string, id int) ([]PortfolioTables, error) {
+	user, err := Me(token)
+	if err != nil {
+		return []PortfolioTables{}, fmt.Errorf("Please login to continue!!")
 	}
+	db, err := ConnectDB()
+	defer db.Close()
+	sqlStatement := `SELECT * FROM portfolio WHERE user_id=$1`
+	rows, err := db.Query(sqlStatement, user.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var portfolios []PortfolioTables
+	for rows.Next() {
+		var p PortfolioTables
+		err = rows.Scan(&p.ID, &p.Name, &p.Description, &p.UDEF, &p.User_id)
+		if err != nil {
+			return nil, err
+		}
+		portfolios = append(portfolios, p)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return portfolios, nil
 }
 
-func UpdatePortfolioTables(p *PortfolioTables) error {
+
+func GetSinglePortfolio(token string, portfolioID int) (PortfolioTables, error) {
+	user, err := Me(token)
+	if err != nil {
+		return PortfolioTables{}, fmt.Errorf("Please login to continue!!")
+	}
+
 	db, err := ConnectDB()
+	if err != nil {
+		return PortfolioTables{}, err
+	}
+	defer db.Close()
+
+	var portfolio PortfolioTables
+	err = db.QueryRow("SELECT * FROM portfolio WHERE id=$1 AND user_id=$2", portfolioID, user.ID).Scan(
+		&portfolio.ID,
+		&portfolio.Name,
+		&portfolio.Description,
+		&portfolio.UDEF,
+		&portfolio.User_id,
+	)
+
+	if err != nil {
+		return PortfolioTables{}, err
+	}
+
+	return portfolio, nil
+}
+
+
+func UpdatePortfolioTables(token string, p *PortfolioTables) error {
+	_, err := Me(token)
+	if err != nil {
+		return fmt.Errorf("Please login to continue!!")
+	}
+	db, err := ConnectDB()
+	defer db.Close()
 	sqlStatement := `
 	UPDATE portfolio
 	SET name = $2, description = $3, udef = $4
@@ -103,18 +156,21 @@ func UpdatePortfolioTables(p *PortfolioTables) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 	return nil
 }
 
-func DeletePortfolioTables(id int, user_id int) error {
+func DeletePortfolioTables(token string, id int, user_id int) error {
+	_, err := Me(token)
+	if err != nil {
+		return fmt.Errorf("Please login to continue!!")
+	}
 	db, err := ConnectDB()
+	defer db.Close()
 	sqlStatement := `DELETE FROM portfolio WHERE id=$1 AND user_id=$2`
 	_, err = db.Exec(sqlStatement, id, user_id)
 	if err != nil {
 		return err
 	}
 
-	defer db.Close()
 	return nil
 }
