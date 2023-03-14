@@ -34,8 +34,8 @@ func NewApp() *App {
 // startup is called at application startup
 func (a *App) startup(ctx context.Context) {
 	// Perform your setup here
-	server.TestOut()
 	server.TestAuth()
+	server.TestOut()
 	a.ctx = ctx
 }
 

@@ -21,8 +21,8 @@ func ConnectDB() (*sql.DB, error) {
 	}
 
 	sqlStatement := `
-		CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT)
-		`
+		CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username TEXT UNIQUE , email TEXT UNIQUE, password TEXT)
+		` //, email_verified BOOLEAN, verification_token TEXT
 	_, err = db.Exec(sqlStatement)
 	if err != nil {
 		fmt.Println(err)
@@ -35,7 +35,8 @@ func ConnectDB() (*sql.DB, error) {
 			name TEXT,
 			description TEXT,
 			udef JSON,
-			user_id INT REFERENCES users(id) ON DELETE CASCADE
+			user_id INT REFERENCES users(id) ON DELETE CASCADE,
+			CONSTRAINT unique_name_user_id UNIQUE (name, user_id)
 		)
 		`
 	_, err = db.Exec(sqlStatement)

@@ -3,6 +3,7 @@ module github.com/KnockOutEZ/Kodee
 go 1.18
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/kaimu/speedtest v0.0.0-20220111074741-408ab75d3ca1
 	github.com/showwin/speedtest-go v1.2.1
 	github.com/wailsapp/wails/v2 v2.2.0
@@ -62,7 +63,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
-	golang.org/x/crypto v0.3.0 // indirect
+	golang.org/x/crypto v0.3.0
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/sys v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
