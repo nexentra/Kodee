@@ -4,7 +4,7 @@ Kodee is a productivity app designed to reduce hassle and improve productivity b
 
 ## Features
 
-Kodee currently has no feature fully implemented, with plans to add more in the future.
+Kodee currently has no feature fully implemented yet. But I have plans to add more and more feature by time.
 
 ### Health Reminder
 
