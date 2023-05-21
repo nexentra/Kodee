@@ -8,11 +8,13 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "../../context";
+import { useEffect, useState } from "react";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   let { sidenavColor, openSidenav } = controller;
-  let sidenavType = "white"
+  const [isAuth, setIsAuth] = useState(false);
+  let sidenavType = "white";
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-blue-gray-800 to-blue-gray-900",
     white: "bg-white shadow-lg",
@@ -22,15 +24,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
   return (
     <aside
       // className={`${sidenavTypes[sidenavType]} ${
-        className={`${sidenavTypes[sidenavType]} ${
+      className={`${sidenavTypes[sidenavType]} ${
         openSidenav ? "translate-x-0" : "-translate-x-80"
       } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
     >
-      <div
-        className={`relative border-b ${
-          "border-blue-gray-50"
-        }`}
-      >
+      <div className={`relative border-b ${"border-blue-gray-50"}`}>
         <Link to="/" className="flex items-center gap-4 py-6 px-8">
           <Avatar src="/img/logo-ct-dark.png" size="sm" />
           <Typography
@@ -65,34 +63,55 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, path }) => (
-              <li key={name}>
-                <NavLink to={`/${layout}${path}`}>
-                  {({ isActive }) => (
-                    <Button
-                      variant={isActive ? "gradient" : "text"}
-                      color={
-                        isActive
-                          ? sidenavColor
-                          : sidenavType === "dark"
-                          ? "white"
-                          : "blue-gray"
-                      }
-                      className="flex items-center gap-4 px-4 capitalize"
-                      fullWidth
-                    >
-                      {icon}
-                      <Typography
-                        color="inherit"
-                        className="font-medium capitalize"
+            {pages ? (
+              pages.map(({ icon, name, path }) => (
+                <li key={name}>
+                  <NavLink to={`/${layout}${path}`}>
+                    {({ isActive }) => (
+                      <Button
+                        variant={isActive ? "gradient" : "text"}
+                        color={
+                          isActive
+                            ? sidenavColor
+                            : sidenavType === "dark"
+                            ? "white"
+                            : "blue-gray"
+                        }
+                        className="flex items-center gap-4 px-4 capitalize"
+                        fullWidth
                       >
-                        {name}
-                      </Typography>
-                    </Button>
-                  )}
-                </NavLink>
+                        {icon}
+                        <Typography
+                          color="inherit"
+                          className="font-medium capitalize "
+                        >
+                          {name}
+                        </Typography>
+                      </Button>
+                    )}
+                  </NavLink>
+                </li>
+              ))
+            ) : (
+              <li>
+                <Button
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                  }}
+                  variant={"text"}
+                  color={"blue-gray"}
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Log Out
+                  </Typography>
+                </Button>
               </li>
-            ))}
+            )}
           </ul>
         ))}
       </div>

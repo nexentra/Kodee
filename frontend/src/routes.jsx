@@ -6,13 +6,15 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications } from "./pages/dashboard";
+import { Home, Profile, Tables, Notifications,WindowControl } from "./pages/dashboard";
 import { SignIn, SignUp } from "./pages/auth";
 import Todo from "./pages/dashboard/Todo";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
+
+
 
 export const routes = [
   {
@@ -48,14 +50,21 @@ export const routes = [
         path: "/notifactions",
         element: <Notifications />,
       },
+      {
+        icon: <BellIcon {...icon} />,
+        name: "window Control",
+        path: "/window-control",
+        element: <WindowControl />,
+      },
+
     ],
   },
   {
     title: "auth pages",
     layout: "auth",
-    pages: [
+    pages: !localStorage.getItem('token') && [
       {
-        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        icon: <ArrowRightOnRectangleIcon {...icon}/>,
         name: "sign in",
         path: "/sign-in",
         element: <SignIn />,

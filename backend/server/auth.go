@@ -3,7 +3,9 @@ package server
 import (
 	// "crypto/rand"
 	"database/sql"
+	"net/mail"
 	"os"
+
 	// "encoding/base64"
 	"fmt"
 	// "net/smtp"
@@ -37,7 +39,7 @@ func TestAuth() {
 
 	// Test the signup and login functions.
 	user := &User{Username: "test1", Email: "kaka400068@gmail.com", Password: "test1"}
-	token, err := Signup(user)
+	token, err := SignUp(user)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -57,7 +59,14 @@ func TestAuth() {
 	}
 }
 
-func Signup(user *User) (string, error) {
+func SignUp(user *User) (string, error) {
+	if user.Username == "" || user.Email == "" || user.Password == "" {
+		return "", fmt.Errorf("missing required fields")
+	}
+	_, err := mail.ParseAddress(user.Email)
+	if err != nil {
+		return "", fmt.Errorf("invalid email address")
+	}
 	db, err := ConnectDB()
 	defer db.Close()
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -91,6 +100,9 @@ func Signup(user *User) (string, error) {
 }
 
 func Login(username string, password string) (string, error) {
+	if username == "" || password == "" {
+		return "", fmt.Errorf("missing required fields")
+	}
 	db, err := ConnectDB()
 	defer db.Close()
 
@@ -125,7 +137,7 @@ func generateToken(username string, id int) (string, error) {
 		username,
 		id,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 			Issuer:    "kodee",
 		},
 	}

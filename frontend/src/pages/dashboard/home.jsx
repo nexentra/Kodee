@@ -27,12 +27,16 @@ import {
   projectsTableData,
   ordersOverviewData,
 } from "../../data";
-import { Greet, Notification,GetCpuUsage,GetRamUsage,GetBandwithSpeed, GetWeather } from '../../../wailsjs/go/main/App';
+// import { Greet, Notification,GetCpuUsage,GetRamUsage,GetBandwithSpeed, GetWeather } from '../../../wailsjs/go/main/App';
 
 
 export function Home() {
   useEffect(() => {
-    Greet();
+    // Greet();
+
+    if(window){
+      console.log(localStorage.getItem("token"))
+    }
 
     const showSystemInfo = async () => {
       // Notification("Your Cpu Usage:" + await GetCpuUsage())
@@ -43,7 +47,7 @@ export function Home() {
     showSystemInfo()
 
     
-  }, [])
+  }, [localStorage])
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

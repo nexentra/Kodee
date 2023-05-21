@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -9,8 +10,24 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { toast } from "react-toastify";
+import { Auth } from '../../../wailsjs/go/main/App';
 
 export function SignIn() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const submitForm = async() => {
+    try{
+      const data= await Auth("signin",{Username:username, Password:password},"")
+      localStorage.setItem("token", data)
+      toast.success("Sign in success")
+      navigate("/dashboard/home");
+    }catch(err){
+    toast.error(err)
+    }
+  }
   return (
     <>
       <img
@@ -30,14 +47,11 @@ export function SignIn() {
             </Typography>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Input type="email" label="Email" size="lg" />
-            <Input type="password" label="Password" size="lg" />
-            <div className="-ml-2.5">
-              <Checkbox label="Remember Me" />
-            </div>
+            <Input type="text" label="Username" size="lg" onChange={(event)=>  setUsername(event.target.value)}/>
+            <Input type="password" label="Password" size="lg" onChange={(event)=>  setPassword(event.target.value)}/>
           </CardBody>
           <CardFooter className="pt-0">
-            <Button variant="gradient" fullWidth>
+            <Button variant="gradient" fullWidth onClick={submitForm}>
               Sign In
             </Button>
             <Typography variant="small" className="mt-6 flex justify-center">

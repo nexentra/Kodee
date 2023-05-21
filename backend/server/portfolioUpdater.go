@@ -21,14 +21,38 @@ func TestOut() {
 
 	db, err := ConnectDB()
 	// Create a new person
-	p1 := PortfolioTables{Name: "test", Description: "test", UDEF: json.RawMessage(`{"test": "test"}`), User_id: 1}
-	err = CreatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",&p1)
+	p1 := PortfolioTables{Name: "jsontest", Description: "test", UDEF: json.RawMessage(`
+	{
+		"tableName": "firstTable",
+		"tableDescription": "firstTableDescription is this",
+		"tableColumnNames": ["columnName", "columnDescription", "columnType"],
+		"tableColumns": [
+			{
+				"columnName": "firstColumn",
+				"columnDescription": "firstColumnDescription is this",
+				"columnType": "string"
+			},
+			{
+				"columnName": "secondColumn",
+				"columnDescription": "secondColumnDescription is this",
+				"columnType": "string"
+
+			},
+			{
+				"columnName": "thirdColumn",
+				"columnDescription": "thirdColumnDescription is this",
+				"columnType": "string"
+			}
+		]
+	}
+	`), User_id: 1}
+	err = CreatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3OTQzMDU0MCwiaXNzIjoia29kZWUifQ.H58gRmNpDh_wakDxfOAlJFM9YotjvN2VjMuRkmWgmLc",&p1)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Retrieve a person by ID
-	p2, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
+	p2, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3OTQzMDU0MCwiaXNzIjoia29kZWUifQ.H58gRmNpDh_wakDxfOAlJFM9YotjvN2VjMuRkmWgmLc",p1.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -36,7 +60,7 @@ func TestOut() {
 
 	// Update a person's age
 	p1.Name = "Bob"
-	err = UpdatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",&p1)
+	err = UpdatePortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3OTQzMDU0MCwiaXNzIjoia29kZWUifQ.H58gRmNpDh_wakDxfOAlJFM9YotjvN2VjMuRkmWgmLc",&p1)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -48,13 +72,13 @@ func TestOut() {
 	// }
 
 	// Verify that the person has been deleted
-	p3, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
+	p3, err := GetPortfolioTables("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3OTQzMDU0MCwiaXNzIjoia29kZWUifQ.H58gRmNpDh_wakDxfOAlJFM9YotjvN2VjMuRkmWgmLc",p1.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(p3)
 
-	p4, err := GetSinglePortfolio("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3ODg3ODgzNSwiaXNzIjoia29kZWUifQ.SUPnRpIH7WHbfxYur8K9wcbFv_VgUYHFXOVthRfM_ho",p1.ID)
+	p4, err := GetSinglePortfolio("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOjEsImV4cCI6MTY3OTQzMDU0MCwiaXNzIjoia29kZWUifQ.H58gRmNpDh_wakDxfOAlJFM9YotjvN2VjMuRkmWgmLc",p1.ID)
 	if err != nil {
 		fmt.Println(err)
 	}

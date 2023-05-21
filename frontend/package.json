@@ -9,17 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "2.0.12",
+    "@tensorflow-models/handpose": "0.0.7",
+    "@tensorflow/tfjs": "^3.6.0",
+    "fingerpose": "0.0.2",
+    "@material-tailwind/react": "1.2.4",
+    "apexcharts": "3.35.5",
     "lodash": "^4.17.21",
+    "prop-types": "15.8.1",
     "react": "^18.2.0",
+    "react-apexcharts": "1.4.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2",
-    "uuid": "^9.0.0",
-    "react-apexcharts": "1.4.0",
-    "@heroicons/react": "2.0.12",
-    "@material-tailwind/react": "1.2.4",
-    "apexcharts": "3.35.5",
-    "prop-types": "15.8.1"
+    "react-toastify": "^9.1.1",
+    "state-pool": "^0.9.0",
+    "react-webcam": "^5.2.3",
+    "web-vitals": "^1.0.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.186",
